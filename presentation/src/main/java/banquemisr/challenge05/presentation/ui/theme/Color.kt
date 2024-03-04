@@ -1,4 +1,4 @@
-package banquemisr.challenge05.moviesapp.ui.theme
+package banquemisr.challenge05.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

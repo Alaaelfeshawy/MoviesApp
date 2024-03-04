@@ -1,4 +1,4 @@
-package banquemisr.challenge05.moviesapp
+package banquemisr.challenge05.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -10,7 +10,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import banquemisr.challenge05.moviesapp.ui.theme.MoviesAppTheme
+import banquemisr.challenge05.presentation.ui.theme.MoviesAppTheme
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
