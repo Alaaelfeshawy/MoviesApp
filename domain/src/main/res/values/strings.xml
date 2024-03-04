@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="something_went_wrong">Something went wrong.</string>
+    <string name="location_permission_not_granted">Location permission is not granted.</string>
+    <string name="no_internet_connection">You are not connected to the network , check you connection and try again.</string>
+</resources>

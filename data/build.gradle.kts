@@ -9,11 +9,15 @@ android {
     namespace = "banquemisr.challenge05.data"
     compileSdk = 34
 
+    buildFeatures {
+        buildConfig = true
+    }
     defaultConfig {
         minSdk = 24
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+        buildConfigField("String", "API_KEY", properties["API_KEY"].toString())
     }
 
     buildTypes {

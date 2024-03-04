@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "banquemisr.challenge05.presentatiob"
+    namespace = "banquemisr.challenge05.presentation"
     compileSdk = 34
 
     defaultConfig {
@@ -39,7 +39,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.2"
+        kotlinCompilerExtensionVersion = "1.4.3"
     }
 }
 
@@ -64,6 +64,14 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+    implementation("androidx.paging:paging-compose:3.2.1")
+    //coil
+    implementation ("io.coil-kt:coil-compose:2.4.0")
+
+    implementation ("androidx.hilt:hilt-navigation-compose:1.1.0")
+
+    implementation(project(":domain"))
+
 //    implementation ("androidx.compose.ui:ui:1.6.2")
 
 }

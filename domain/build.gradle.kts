@@ -53,3 +53,7 @@ dependencies {
     testImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")
     testImplementation("androidx.compose.ui:ui-test-manifest:1.6.2")
 }
+
+kapt {
+    correctErrorTypes = true
+}
