@@ -13,14 +13,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import banquemisr.challenge05.domain.dto.ErrorType
 import banquemisr.challenge05.presentation.base.LoadingType
 import banquemisr.challenge05.presentation.screens.home.viewmodel.MoviesContract
 import banquemisr.challenge05.presentation.screens.home.viewmodel.MoviesViewModel
 
 @Composable
-fun HomeScreen(viewModel: MoviesViewModel = hiltViewModel()) {
+fun HomeScreen(navController: NavHostController, viewModel: MoviesViewModel) {
 
     val noInternetConnection = viewModel.uiState.collectAsState().value.errorType == ErrorType.NoInternetConnection
 

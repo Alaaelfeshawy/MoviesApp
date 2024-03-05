@@ -10,5 +10,10 @@ object Routes {
 
     object Movies {
         const val MOVIES_HOME = "movies"
+        const val MOVIES_DETAILS = "movies/details/{id}"
+    }
+
+    object Paths {
+        const val MOVIE_DETAILS_ID = "id"
     }
 }
