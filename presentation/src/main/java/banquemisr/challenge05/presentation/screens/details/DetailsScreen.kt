@@ -7,7 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import banquemisr.challenge05.presentation.screens.home.MoviesTopBar
+import banquemisr.challenge05.presentation.components.MoviesTopBar
 
 @Composable
 fun DetailsScreen(navController: NavHostController, movieId: String?) {

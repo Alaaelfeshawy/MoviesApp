@@ -1,11 +1,15 @@
 package banquemisr.challenge05.data.remote.validate
 
+import banquemisr.challenge05.data.Constants.NO_CONNECTION_CODE
+import banquemisr.challenge05.data.Constants.TIME_OUT_CODE
 import banquemisr.challenge05.data.remote.response.ErrorResponse
 import com.google.gson.Gson
 import retrofit2.HttpException
 import retrofit2.Response
 import javax.inject.Inject
 import banquemisr.challenge05.domain.R
+import java.io.IOException
+import java.net.SocketTimeoutException
 
 
 class ValidateAPIResponse @Inject constructor(
@@ -33,12 +37,18 @@ class ValidateAPIResponse @Inject constructor(
 
                 }
             }
-        } catch (exception: HttpException) {
-            APIResponseState.NotValidResponse(
-                exception.code(),
-                R.string.something_went_wrong
-            )
-        } catch (e: Exception) {
+        } catch (throwable: HttpException) {
+            APIResponseState.NotValidResponse(errorCode = throwable.code(), message = throwable.message())
+        }
+        catch (e: Throwable) {
+            APIResponseState.NotValidResponse(errorCode = 999 , message = e.message ?: R.string.something_went_wrong)
+        } catch (s: SocketTimeoutException) {
+            APIResponseState.NotValidResponse(errorCode =TIME_OUT_CODE, message = s.message ?: R.string.something_went_wrong)
+        }
+        catch (io: IOException){
+            APIResponseState.NotValidResponse(errorCode = NO_CONNECTION_CODE, message = io.message ?: R.string.something_went_wrong)
+        }
+        catch (e: Exception) {
             APIResponseState.NotValidResponse(
                 9999,
                 e.message ?: R.string.something_went_wrong

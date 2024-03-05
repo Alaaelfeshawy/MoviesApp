@@ -20,5 +20,6 @@ object Constants {
         const val UPCOMING = "movie/upcoming"
     }
 
-
+    const val TIME_OUT_CODE = 100
+    const val NO_CONNECTION_CODE = 101
 }

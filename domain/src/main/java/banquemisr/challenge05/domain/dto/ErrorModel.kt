@@ -9,8 +9,7 @@ sealed class ErrorModel(
     val errorCode: Int?,
     @DrawableRes val errorIcon: Int?
 ) {
-    //TODO get icons for errors
-     object NoInternetConnection : ErrorModel(R.string.no_internet_connection, GENERAL_ERROR_CODE, null)
+     object NoInternetConnection : ErrorModel(R.string.no_internet_connection, GENERAL_ERROR_CODE, R.drawable.no_internet_connection)
 
     data class GeneralError(
         val code: Int?,

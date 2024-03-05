@@ -1,6 +1,6 @@
 package banquemisr.challenge05.presentation.screens.home.widgets
 
-import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,6 +15,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -24,21 +25,23 @@ import banquemisr.challenge05.presentation.base.Routes
 import banquemisr.challenge05.presentation.base.Routes.setPatArgumentsToRoutes
 import banquemisr.challenge05.presentation.screens.home.viewmodel.MoviesContract
 import banquemisr.challenge05.presentation.screens.home.viewmodel.MoviesViewModel
+import banquemisr.challenge05.presentation.utils.extensions.getStringFromMessage
 
 @Composable
 fun UpcomingMoviesSection(viewModel: MoviesViewModel , navController : NavController) {
     val state = viewModel.uiState.collectAsState().value
     val movies = state.upcomingMoviesState.movies
     val loadingType = state.upcomingMoviesState.loadingType
-    val errorModel = state.upcomingMoviesState.errorModel?.errorMessage.toString()
-
+    val errorModel = state.upcomingMoviesState.errorModel?.errorMessage
+    val context = LocalContext.current
     val lazyListState: LazyListState = rememberLazyListState()
     val isScrollToEnd by remember(lazyListState) {
         derivedStateOf {
             val totalItemsCount = lazyListState.layoutInfo.totalItemsCount
-            val firstVisibleItemIndex = lazyListState.layoutInfo.visibleItemsInfo.firstOrNull()?.index ?: 0
+            val firstVisibleItemIndex =
+                lazyListState.layoutInfo.visibleItemsInfo.firstOrNull()?.index ?: 0
             val visibleItemsCount = lazyListState.layoutInfo.visibleItemsInfo.size
-            firstVisibleItemIndex + visibleItemsCount >= totalItemsCount && !movies.isNullOrEmpty() && loadingType ==LoadingType.None
+            firstVisibleItemIndex + visibleItemsCount >= totalItemsCount && !movies.isNullOrEmpty() && loadingType == LoadingType.None
         }
     }
     if (isScrollToEnd) {
@@ -46,22 +49,25 @@ fun UpcomingMoviesSection(viewModel: MoviesViewModel , navController : NavContro
     }
 
     Column(modifier = Modifier.fillMaxWidth()) {
-
-        if (!movies.isNullOrEmpty()){
-            Text(text = "Upcoming movies" ,
+        if (errorModel != null){
+            Toast.makeText(context, errorModel.getStringFromMessage(context), Toast.LENGTH_SHORT).show()
+        }
+        if (!movies.isNullOrEmpty()) {
+            Text(
+                text = "Upcoming movies",
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp,
                 modifier = Modifier.padding(12.dp)
             )
-        }else{
-            Box{}
+        } else {
+            Box {}
         }
         LazyRow(
             state = lazyListState
-        ){
-            items(movies?.size ?:0){
+        ) {
+            items(movies?.size ?: 0) {
                 val item = movies?.get(it)
-                MovieItem(item = item){ id ->
+                MovieItem(item = item) { id ->
                     val route = Routes.Movies.MOVIES_DETAILS.setPatArgumentsToRoutes(
                         Routes.Paths.MOVIE_DETAILS_ID, id.toString()
                     )
