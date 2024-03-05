@@ -33,9 +33,12 @@ fun UpcomingMoviesSection(viewModel: MoviesViewModel , navController : NavContro
     val errorModel = state.upcomingMoviesState.errorModel?.errorMessage.toString()
 
     val lazyListState: LazyListState = rememberLazyListState()
-    val isScrollToEnd by remember {
+    val isScrollToEnd by remember(lazyListState) {
         derivedStateOf {
-            lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index == lazyListState.layoutInfo.totalItemsCount - 1
+            val totalItemsCount = lazyListState.layoutInfo.totalItemsCount
+            val firstVisibleItemIndex = lazyListState.layoutInfo.visibleItemsInfo.firstOrNull()?.index ?: 0
+            val visibleItemsCount = lazyListState.layoutInfo.visibleItemsInfo.size
+            firstVisibleItemIndex + visibleItemsCount >= totalItemsCount && !movies.isNullOrEmpty() && loadingType ==LoadingType.None
         }
     }
     if (isScrollToEnd) {

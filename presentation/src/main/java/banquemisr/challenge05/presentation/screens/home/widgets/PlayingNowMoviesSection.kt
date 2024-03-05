@@ -2,7 +2,6 @@ package banquemisr.challenge05.presentation.screens.home.widgets
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
@@ -24,7 +23,6 @@ import banquemisr.challenge05.presentation.base.Routes
 import banquemisr.challenge05.presentation.base.Routes.setPatArgumentsToRoutes
 import banquemisr.challenge05.presentation.screens.home.viewmodel.MoviesContract
 import banquemisr.challenge05.presentation.screens.home.viewmodel.MoviesViewModel
-import banquemisr.challenge05.presentation.utils.extensions.ShowPaginationLoading
 
 @Composable
 fun PlayingNowMoviesSection(viewModel: MoviesViewModel, navController: NavHostController) {
@@ -36,8 +34,10 @@ fun PlayingNowMoviesSection(viewModel: MoviesViewModel, navController: NavHostCo
     val lazyListState: LazyListState = rememberLazyListState()
     val isScrollToEnd by remember {
         derivedStateOf {
-            lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index == lazyListState.layoutInfo.totalItemsCount - 1
-        }
+            val totalItemsCount = lazyListState.layoutInfo.totalItemsCount
+            val firstVisibleItemIndex = lazyListState.layoutInfo.visibleItemsInfo.firstOrNull()?.index ?: 0
+            val visibleItemsCount = lazyListState.layoutInfo.visibleItemsInfo.size
+            firstVisibleItemIndex + visibleItemsCount >= totalItemsCount && !movies.isNullOrEmpty() && loadingType ==LoadingType.None        }
     }
     if (isScrollToEnd) {
         viewModel.setEvent(MoviesContract.Event.GetPlayingMovies(LoadingType.PaginationLoading))
@@ -71,9 +71,7 @@ fun PlayingNowMoviesSection(viewModel: MoviesViewModel, navController: NavHostCo
                 when (loadingType) {
                     LoadingType.FullLoading -> MovieItemShimmer()
 
-                    LoadingType.PaginationLoading -> loadingType.ShowPaginationLoading(
-                        modifier = Modifier.fillMaxSize()
-                    )
+                    LoadingType.PaginationLoading -> MovieItemShimmer(isTitleVisible = false)
 
                     else -> {}
                 }
