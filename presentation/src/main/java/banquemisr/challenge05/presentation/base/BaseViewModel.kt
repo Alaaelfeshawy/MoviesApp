@@ -21,7 +21,7 @@ abstract class BaseViewModel<Event : UIEvent, State : UIState, Effect : UIEffect
     ViewModel() {
 
     abstract fun createInitialState(): State
-    abstract fun onExceptionThrown(throwable: Throwable)
+//    abstract fun onExceptionThrown(throwable: Throwable)
     abstract fun handleEvent(uiEvent: UIEvent)
 
     private val initialState: State by lazy { createInitialState() }
@@ -41,9 +41,9 @@ abstract class BaseViewModel<Event : UIEvent, State : UIState, Effect : UIEffect
     val currentState: State
         get() = uiState.value
 
-    private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        onExceptionThrown(throwable)
-    }
+//    private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
+//        onExceptionThrown(throwable)
+//    }
 
     init {
         subscribeToEvents()
@@ -89,7 +89,7 @@ abstract class BaseViewModel<Event : UIEvent, State : UIState, Effect : UIEffect
         dispatcher: CoroutineDispatcher = coroutineDispatcher,
         func: suspend () -> Unit
     ) {
-        viewModelScope.launch(dispatcher + coroutineExceptionHandler) {
+        viewModelScope.launch(dispatcher /*+ coroutineExceptionHandler*/) {
             func.invoke()
         }
     }

@@ -1,12 +1,15 @@
 package banquemisr.challenge05.presentation.screens.home
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -14,31 +17,101 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import banquemisr.challenge05.domain.dto.ErrorType
 import banquemisr.challenge05.presentation.base.LoadingType
 
 @Composable
 fun HomeScreen(viewModel: MoviesViewModel = hiltViewModel()) {
-    val state = viewModel.uiState.collectAsState().value
 
+    val noInternetConnection = viewModel.uiState.collectAsState().value.errorType == ErrorType.NoInternetConnection
+
+    Column {
+        if (noInternetConnection){
+            Text(text = "no internet")
+        }else{
+            Text(text = "Upcoming")
+            UpcomingMoviesSection(viewModel)
+            Text(text = "Now playing")
+            PlayingNowMoviesSection(viewModel)
+            Text(text = "Popular")
+            PopularMoviesSection(viewModel)
+        }
+
+    }
+}
+
+@Composable
+fun UpcomingMoviesSection(viewModel: MoviesViewModel) {
+    val state = viewModel.uiState.collectAsState().value
+    val movies = state.upcomingMoviesState.movies
     val lazyListState: LazyListState = rememberLazyListState()
     val isScrollToEnd by remember {
         derivedStateOf {
-            lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index == lazyListState.layoutInfo.totalItemsCount - 2
+            lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index == lazyListState.layoutInfo.totalItemsCount - 1
         }
     }
-    if (isScrollToEnd)
-        viewModel.setEvent(MoviesContract.Event.GetPlayingMovies(LoadingType.PaginationLoading))
+    if (isScrollToEnd) {
+        viewModel.setEvent(MoviesContract.Event.GetUpcomingMovies(LoadingType.PaginationLoading))
+    }
 
-    Column {
-        LazyColumn(
-            state = lazyListState
-        ){
-            state.movies?.size?.let {
-                items(it) { Text(
-                    text =  state.movies.get(it).title.toString(),
-                    modifier = Modifier.padding(20.dp)
-                    ) }
-            }
+    LazyRow(
+        state = lazyListState
+    ){
+        items(movies?.size ?:0){
+            Text(
+                text =  movies?.get(it)?.title.toString(),
+                modifier = Modifier.padding(20.dp)
+            )
+        }
+    }
+}
+@Composable
+fun PlayingNowMoviesSection(viewModel: MoviesViewModel) {
+    val state = viewModel.uiState.collectAsState().value
+    val movies = state.playingMoviesState.movies
+    val listState: LazyListState = rememberLazyListState()
+    val isScrollToEnd by remember {
+        derivedStateOf {
+            (listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index == listState.layoutInfo.totalItemsCount-1)
+        }
+    }
+    if (isScrollToEnd) {
+        viewModel.setEvent(MoviesContract.Event.GetPlayingMovies(LoadingType.PaginationLoading))
+    }
+
+    LazyRow(
+        state = listState
+    ){
+        items(movies?.size ?:0){
+            Text(
+                text =  movies?.get(it)?.title.toString(),
+                modifier = Modifier.padding(20.dp)
+            )
+        }
+    }
+}
+@Composable
+fun PopularMoviesSection(viewModel: MoviesViewModel) {
+    val state = viewModel.uiState.collectAsState().value
+    val movies = state.popularMoviesState.movies
+    val listState: LazyListState = rememberLazyListState()
+    val isScrollToEnd by remember {
+        derivedStateOf {
+            (listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index == listState.layoutInfo.totalItemsCount-1)
+        }
+    }
+    if (isScrollToEnd) {
+        viewModel.setEvent(MoviesContract.Event.GetPopularMovies(LoadingType.PaginationLoading))
+    }
+
+    LazyRow(
+        state = listState
+    ){
+        items(movies?.size ?:0){
+            Text(
+                text =  movies?.get(it)?.title.toString(),
+                modifier = Modifier.padding(20.dp)
+            )
         }
     }
 }
