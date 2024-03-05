@@ -1,15 +1,12 @@
 package banquemisr.challenge05.presentation.screens.home
 
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -19,6 +16,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import banquemisr.challenge05.domain.dto.ErrorType
 import banquemisr.challenge05.presentation.base.LoadingType
+import banquemisr.challenge05.presentation.screens.home.viewmodel.MoviesContract
+import banquemisr.challenge05.presentation.screens.home.viewmodel.MoviesViewModel
 
 @Composable
 fun HomeScreen(viewModel: MoviesViewModel = hiltViewModel()) {

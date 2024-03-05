@@ -1,4 +1,4 @@
-package banquemisr.challenge05.presentation.screens.home
+package banquemisr.challenge05.presentation.screens.home.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import banquemisr.challenge05.domain.di.dispatchers.qualifiers.IODispatcher
@@ -27,7 +27,7 @@ class MoviesViewModel @Inject constructor(
     private val iGetUpcomingMoviesUseCase: IGetUpcomingMoviesUseCase,
     private val iGetPopularMoviesUseCase: IGetPopularMoviesUseCase,
     @IODispatcher private val coroutineDispatcher: CoroutineDispatcher
-) : BaseViewModel<MoviesContract.Event, MoviesContract.State, MoviesContract.Effect>(coroutineDispatcher) {
+) : BaseViewModel<MoviesContract.Event, MoviesContract.State>(coroutineDispatcher) {
 
     init {
         setEvent(MoviesContract.Event.GetHomeData(FullLoading))
@@ -35,19 +35,6 @@ class MoviesViewModel @Inject constructor(
     override fun createInitialState(): MoviesContract.State {
         return MoviesContract.State()
     }
-
-//    override fun onExceptionThrown(throwable: Throwable) {
-//        setState {
-//            copy(
-//                loadingType = None,
-//                errorModel = ErrorModel.GeneralError(
-//                    GENERAL_ERROR_CODE,
-//                    throwable.message
-//                )
-//            )
-//        }
-//    }
-
     override fun handleEvent(uiEvent: UIEvent) {
         when (uiEvent) {
               is MoviesContract.Event.GetHomeData ->{
@@ -96,7 +83,6 @@ class MoviesViewModel @Inject constructor(
 //            }
         }
     }
-
     private fun getUpcomingMovies(uiEvent: MoviesContract.Event.GetUpcomingMovies) {
         val canPaginate = currentState.upcomingMoviesState.canPaginate
         val moviesNotNullOrEmpty = !currentState.upcomingMoviesState.movies.isNullOrEmpty()
@@ -136,28 +122,13 @@ class MoviesViewModel @Inject constructor(
             else -> callPopularMovies(uiEvent.loadingType)
         }
     }
-    private fun getCurrentPageForPlayingMovies(loadingType: LoadingType): Int {
-        val currentPage = currentState.playingMoviesState.moviesDTO?.currentPage ?: 0
+    private fun getCurrentPage(currentPage : Int? , loadingType: LoadingType): Int {
+        val page = currentPage?: 0
         return if (loadingType == FullLoading || loadingType == SwipeRefreshLoading)
             1
         else
-            currentPage + 1
+            page + 1
     }
-    private fun getCurrentPageForUpcomingMovies(loadingType: LoadingType): Int {
-        val currentPage = currentState.upcomingMoviesState.moviesDTO?.currentPage ?: 0
-        return if (loadingType == FullLoading || loadingType == SwipeRefreshLoading)
-            1
-        else
-            currentPage + 1
-    }
-    private fun getCurrentPageForPopularMovies(loadingType: LoadingType): Int {
-        val currentPage = currentState.popularMoviesState.moviesDTO?.currentPage ?: 0
-        return if (loadingType == FullLoading || loadingType == SwipeRefreshLoading)
-            1
-        else
-            currentPage + 1
-    }
-
     private fun callPlayingMovies(loadingType: LoadingType = None) {
         launchCoroutineScope {
             setState {
@@ -168,7 +139,10 @@ class MoviesViewModel @Inject constructor(
                     ),
                 )
             }
-            iGetPlayingMoviesUseCase.getPlayingMovies(getCurrentPageForPlayingMovies(loadingType))
+            iGetPlayingMoviesUseCase.getPlayingMovies(getCurrentPage(
+                loadingType = loadingType,
+                currentPage = currentState.playingMoviesState.moviesDTO?.currentPage
+                ))
                 .collect { playingMoviesDataState ->
                     when (playingMoviesDataState) {
                         is DataState.Error<*> -> onPlayingMoviesError(
@@ -185,7 +159,6 @@ class MoviesViewModel @Inject constructor(
                 }
         }
     }
-
     private fun onPlayingMoviesError(
         errorModel: ErrorModel?,
         errorType: ErrorType?,
@@ -239,7 +212,9 @@ class MoviesViewModel @Inject constructor(
                     ),
                 )
             }
-            iGetUpcomingMoviesUseCase.getUpcomingMovies(getCurrentPageForUpcomingMovies(loadingType))
+            iGetUpcomingMoviesUseCase.getUpcomingMovies(getCurrentPage(
+                currentPage = currentState.upcomingMoviesState.moviesDTO?.currentPage,
+                loadingType = loadingType))
                 .collect { upcomingMoviesDataState ->
                     when (upcomingMoviesDataState) {
                         is DataState.Error<*> -> onUpcomingMoviesError(
@@ -310,7 +285,9 @@ class MoviesViewModel @Inject constructor(
                     ),
                 )
             }
-            iGetPopularMoviesUseCase.getPopularMovies(getCurrentPageForPopularMovies(loadingType))
+            iGetPopularMoviesUseCase.getPopularMovies(getCurrentPage(
+                currentPage = currentState.popularMoviesState.moviesDTO?.currentPage,
+                loadingType = loadingType))
                 .collect { popularMoviesDataState ->
                     when (popularMoviesDataState) {
                         is DataState.Error<*> -> onPopularMoviesError(

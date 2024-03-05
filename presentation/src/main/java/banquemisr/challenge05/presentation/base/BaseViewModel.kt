@@ -17,11 +17,10 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-abstract class BaseViewModel<Event : UIEvent, State : UIState, Effect : UIEffect>(private val coroutineDispatcher: CoroutineDispatcher) :
+abstract class BaseViewModel<Event : UIEvent, State : UIState>(private val coroutineDispatcher: CoroutineDispatcher) :
     ViewModel() {
 
     abstract fun createInitialState(): State
-//    abstract fun onExceptionThrown(throwable: Throwable)
     abstract fun handleEvent(uiEvent: UIEvent)
 
     private val initialState: State by lazy { createInitialState() }
@@ -35,15 +34,8 @@ abstract class BaseViewModel<Event : UIEvent, State : UIState, Effect : UIEffect
     )
     val event = _event.asSharedFlow()
 
-    private val _effect: Channel<Effect?> = Channel()
-    var effect = _effect.receiveAsFlow()
-
     val currentState: State
         get() = uiState.value
-
-//    private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
-//        onExceptionThrown(throwable)
-//    }
 
     init {
         subscribeToEvents()
@@ -71,25 +63,11 @@ abstract class BaseViewModel<Event : UIEvent, State : UIState, Effect : UIEffect
         val newState = currentState.reduce()
         _uiState.value = newState
     }
-
-    fun setEffect(effect: () -> Effect) {
-        val effectValue = effect()
-        launchCoroutineScope {
-            _effect.send(effectValue)
-        }
-    }
-
-    protected fun resetEffect() {
-        launchCoroutineScope {
-            _effect.send(null)
-        }
-    }
-
     protected fun launchCoroutineScope(
         dispatcher: CoroutineDispatcher = coroutineDispatcher,
         func: suspend () -> Unit
     ) {
-        viewModelScope.launch(dispatcher /*+ coroutineExceptionHandler*/) {
+        viewModelScope.launch(dispatcher) {
             func.invoke()
         }
     }
