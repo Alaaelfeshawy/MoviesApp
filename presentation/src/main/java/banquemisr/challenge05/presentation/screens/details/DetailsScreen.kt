@@ -6,10 +6,10 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 
 @Composable
-fun DetailsScreen(navController: NavHostController, string: String?) {
+fun DetailsScreen(navController: NavHostController, movieId: String?) {
 
     Column {
-        Text(text = "Details")
+        Text(text = "Details $movieId")
 
     }
 }

@@ -18,12 +18,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import banquemisr.challenge05.presentation.base.LoadingType
+import banquemisr.challenge05.presentation.base.Routes
+import banquemisr.challenge05.presentation.base.Routes.setPatArgumentsToRoutes
 import banquemisr.challenge05.presentation.screens.home.viewmodel.MoviesContract
 import banquemisr.challenge05.presentation.screens.home.viewmodel.MoviesViewModel
 
 @Composable
-fun UpcomingMoviesSection(viewModel: MoviesViewModel) {
+fun UpcomingMoviesSection(viewModel: MoviesViewModel , navController : NavController) {
     val state = viewModel.uiState.collectAsState().value
     val movies = state.upcomingMoviesState.movies
     val loadingType = state.upcomingMoviesState.loadingType
@@ -55,7 +58,12 @@ fun UpcomingMoviesSection(viewModel: MoviesViewModel) {
         ){
             items(movies?.size ?:0){
                 val item = movies?.get(it)
-                MovieItem(item = item)
+                MovieItem(item = item){ id ->
+                    val route = Routes.Movies.MOVIES_DETAILS.setPatArgumentsToRoutes(
+                        Routes.Paths.MOVIE_DETAILS_ID, id.toString()
+                    )
+                    navController.navigate(route)
+                }
 
             }
             item(key = loadingType) {

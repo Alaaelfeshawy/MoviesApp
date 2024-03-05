@@ -18,14 +18,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import banquemisr.challenge05.presentation.base.LoadingType
+import banquemisr.challenge05.presentation.base.Routes
+import banquemisr.challenge05.presentation.base.Routes.setPatArgumentsToRoutes
 import banquemisr.challenge05.presentation.screens.home.viewmodel.MoviesContract
 import banquemisr.challenge05.presentation.screens.home.viewmodel.MoviesViewModel
-import banquemisr.challenge05.presentation.utils.extensions.ShowLoader
 import banquemisr.challenge05.presentation.utils.extensions.ShowPaginationLoading
 
 @Composable
-fun PopularMoviesSection(viewModel: MoviesViewModel) {
+fun PopularMoviesSection(viewModel: MoviesViewModel, navController: NavHostController) {
     val state = viewModel.uiState.collectAsState().value
     val movies = state.popularMoviesState.movies
     val loadingType = state.popularMoviesState.loadingType
@@ -56,7 +58,13 @@ fun PopularMoviesSection(viewModel: MoviesViewModel) {
         ){
             items(movies?.size ?:0){
                 val item = movies?.get(it)
-                MovieItem(item = item)
+                MovieItem(item = item){
+                        id ->
+                    val route = Routes.Movies.MOVIES_DETAILS.setPatArgumentsToRoutes(
+                        Routes.Paths.MOVIE_DETAILS_ID, id.toString()
+                    )
+                    navController.navigate(route)
+                }
 
             }
             item(key = loadingType) {

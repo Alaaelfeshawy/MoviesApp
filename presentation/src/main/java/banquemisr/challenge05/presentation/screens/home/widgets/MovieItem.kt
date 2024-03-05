@@ -1,6 +1,7 @@
 package banquemisr.challenge05.presentation.screens.home.widgets
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,6 +24,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import banquemisr.challenge05.domain.dto.movies.Movie
 import banquemisr.challenge05.presentation.components.NetworkImage
 import banquemisr.challenge05.presentation.utils.extensions.formatDecimals
@@ -33,13 +35,17 @@ import banquemisr.challenge05.presentation.utils.extensions.getFullPathImage
 fun MovieItem(
     modifier: Modifier = Modifier,
     item: Movie? = Movie(),
+    onMovieClicked : (Int)->Unit = {}
 ) {
     Surface(
         modifier = Modifier
             .padding(12.dp)
             .fillMaxWidth()
             .widthIn(max = 200.dp)
-            .heightIn(max = 250.dp),
+            .heightIn(max = 250.dp)
+            .clickable {
+                item?.id?.let { onMovieClicked.invoke(it) }
+            },
         shape = RoundedCornerShape(16.dp),
         shadowElevation = 5.dp,
     ) {
