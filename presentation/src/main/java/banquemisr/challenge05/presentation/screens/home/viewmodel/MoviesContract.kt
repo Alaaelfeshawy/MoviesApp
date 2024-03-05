@@ -32,7 +32,6 @@ data class HomeState(
     val errorModel: ErrorModel? = null,
     val errorType: ErrorType? = null,
     val movies: ArrayList<Movie>? = arrayListOf(),
-    val isRefreshing: Boolean = false,
     val canPaginate: Boolean = false,
     val detailsRoute: String? = null,
 )

@@ -4,5 +4,4 @@ enum class LoadingType {
     None,
     FullLoading,
     PaginationLoading,
-    SwipeRefreshLoading
 }

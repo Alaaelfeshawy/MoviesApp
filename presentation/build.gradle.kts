@@ -70,6 +70,8 @@ dependencies {
 
     implementation ("androidx.hilt:hilt-navigation-compose:1.1.0")
 
+    implementation("com.valentinilk.shimmer:compose-shimmer:1.2.0")
+
     implementation(project(":domain"))
 
 //    implementation ("androidx.compose.ui:ui:1.6.2")

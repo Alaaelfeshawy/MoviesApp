@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import banquemisr.challenge05.presentation.R
 import banquemisr.challenge05.presentation.base.LoadingType
+import banquemisr.challenge05.presentation.utils.Constants
 
 @Composable
 fun LoadingType?.ShowLoader(modifier: Modifier = Modifier) {
@@ -25,7 +26,7 @@ fun LoadingType?.ShowLoader(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun LoadingType?.ShowPaginationLoading(modifier: Modifier, message: Int) {
+fun LoadingType?.ShowPaginationLoading(modifier: Modifier = Modifier, message: Int?=null) {
     val context = LocalContext.current
     if (this != null)
         if (this == LoadingType.PaginationLoading)
@@ -36,6 +37,13 @@ fun LoadingType?.ShowPaginationLoading(modifier: Modifier, message: Int) {
                 verticalArrangement = Arrangement.Center,
             ) {
                 CircularProgressIndicator()
-                Text(text = context.getString(message))
+                if (message != null)
+                    Text(text = context.getString(message))
             }
+}
+
+
+@Composable
+fun String?.getFullPathImage(): String {
+    return "${Constants.BASE_IMAGE_URL}$this"
 }

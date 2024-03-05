@@ -14,7 +14,6 @@ import banquemisr.challenge05.presentation.base.LoadingType
 import banquemisr.challenge05.presentation.base.LoadingType.FullLoading
 import banquemisr.challenge05.presentation.base.LoadingType.None
 import banquemisr.challenge05.presentation.base.LoadingType.PaginationLoading
-import banquemisr.challenge05.presentation.base.LoadingType.SwipeRefreshLoading
 import banquemisr.challenge05.presentation.base.UIEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -124,7 +123,7 @@ class MoviesViewModel @Inject constructor(
     }
     private fun getCurrentPage(currentPage : Int? , loadingType: LoadingType): Int {
         val page = currentPage?: 0
-        return if (loadingType == FullLoading || loadingType == SwipeRefreshLoading)
+        return if (loadingType == FullLoading)
             1
         else
             page + 1
@@ -135,10 +134,10 @@ class MoviesViewModel @Inject constructor(
                 copy(
                     playingMoviesState = currentState.playingMoviesState.copy(
                         loadingType = loadingType,
-                        isRefreshing = loadingType == SwipeRefreshLoading
                     ),
                 )
             }
+
             iGetPlayingMoviesUseCase.getPlayingMovies(getCurrentPage(
                 loadingType = loadingType,
                 currentPage = currentState.playingMoviesState.moviesDTO?.currentPage
@@ -170,7 +169,6 @@ class MoviesViewModel @Inject constructor(
                     errorModel = if (loadingType != PaginationLoading) errorModel else null,
                     errorType = errorType,
                     loadingType = None,
-                    isRefreshing = false,
                 ),
                 errorType = errorType,
             )
@@ -181,13 +179,8 @@ class MoviesViewModel @Inject constructor(
         loadingType: LoadingType,
         moviesDTO: MoviesDTO?
     ) {
-        val isSwipeRefresh = loadingType == SwipeRefreshLoading
         val movies = currentState.playingMoviesState.movies?.apply {
-            if (isSwipeRefresh)
-                clear()
-            addAll(
-                moviesDTO?.movies ?: arrayListOf()
-            )
+            addAll(moviesDTO?.movies ?: arrayListOf())
         }
         setState {
             copy(
@@ -195,7 +188,6 @@ class MoviesViewModel @Inject constructor(
                     movies = movies,
                     moviesDTO = moviesDTO,
                     loadingType = None,
-                    isRefreshing = false,
                     canPaginate = moviesDTO?.canPaginate == true
                 ),
             )
@@ -208,7 +200,6 @@ class MoviesViewModel @Inject constructor(
                 copy(
                     upcomingMoviesState = currentState.upcomingMoviesState.copy(
                         loadingType = loadingType,
-                        isRefreshing = loadingType == SwipeRefreshLoading
                     ),
                 )
             }
@@ -243,7 +234,6 @@ class MoviesViewModel @Inject constructor(
                     errorModel = if (loadingType != PaginationLoading) errorModel else null,
                     errorType = errorType,
                     loadingType = None,
-                    isRefreshing = false,
                 ),
                 errorType = errorType,
                 )
@@ -254,13 +244,8 @@ class MoviesViewModel @Inject constructor(
         loadingType: LoadingType,
         moviesDTO: MoviesDTO?
     ) {
-        val isSwipeRefresh = loadingType == SwipeRefreshLoading
         val movies = currentState.upcomingMoviesState.movies?.apply {
-            if (isSwipeRefresh)
-                clear()
-            addAll(
-                moviesDTO?.movies ?: arrayListOf()
-            )
+            addAll(moviesDTO?.movies ?: arrayListOf())
         }
         setState {
             copy(
@@ -268,7 +253,6 @@ class MoviesViewModel @Inject constructor(
                     movies = movies,
                     moviesDTO = moviesDTO,
                     loadingType = None,
-                    isRefreshing = false,
                     canPaginate = moviesDTO?.canPaginate == true
                 ),
             )
@@ -281,7 +265,6 @@ class MoviesViewModel @Inject constructor(
                 copy(
                     popularMoviesState = currentState.popularMoviesState.copy(
                         loadingType = loadingType,
-                        isRefreshing = loadingType == SwipeRefreshLoading
                     ),
                 )
             }
@@ -316,7 +299,6 @@ class MoviesViewModel @Inject constructor(
                     errorModel = if (loadingType != PaginationLoading) errorModel else null,
                     errorType = errorType,
                     loadingType = None,
-                    isRefreshing = false,
                 ),
                 errorType = errorType,
 
@@ -328,13 +310,8 @@ class MoviesViewModel @Inject constructor(
         loadingType: LoadingType,
         moviesDTO: MoviesDTO?
     ) {
-        val isSwipeRefresh = loadingType == SwipeRefreshLoading
         val movies = currentState.popularMoviesState.movies?.apply {
-            if (isSwipeRefresh)
-                clear()
-            addAll(
-                moviesDTO?.movies ?: arrayListOf()
-            )
+            addAll(moviesDTO?.movies ?: arrayListOf())
         }
         setState {
             copy(
@@ -342,7 +319,6 @@ class MoviesViewModel @Inject constructor(
                     movies = movies,
                     moviesDTO = moviesDTO,
                     loadingType = None,
-                    isRefreshing = false,
                     canPaginate = moviesDTO?.canPaginate == true
                 ),
             )
