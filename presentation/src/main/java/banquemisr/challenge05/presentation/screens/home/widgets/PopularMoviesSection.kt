@@ -16,6 +16,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -23,6 +25,7 @@ import androidx.navigation.NavHostController
 import banquemisr.challenge05.presentation.base.LoadingType
 import banquemisr.challenge05.presentation.base.Routes
 import banquemisr.challenge05.presentation.base.Routes.setPatArgumentsToRoutes
+import banquemisr.challenge05.presentation.screens.home.MoviesScreenSemantics
 import banquemisr.challenge05.presentation.screens.home.viewmodel.MoviesContract
 import banquemisr.challenge05.presentation.screens.home.viewmodel.MoviesViewModel
 import banquemisr.challenge05.presentation.utils.extensions.getStringFromMessage
@@ -75,7 +78,12 @@ fun PopularMoviesSection(viewModel: MoviesViewModel, navController: NavHostContr
             }
             item(key = loadingType) {
                 when (loadingType) {
-                    LoadingType.FullLoading -> MovieItemShimmer()
+                    LoadingType.FullLoading -> MovieItemShimmer(
+                        modifier = Modifier.semantics {
+                            testTag =
+                                MoviesScreenSemantics.MoviesListSemantics.MOVIES_FULL_LOADING_FOR_POPULAR_MOVIES_TAG
+                        }
+                    )
 
                     LoadingType.PaginationLoading -> MovieItemShimmer(isTitleVisible = false)
 

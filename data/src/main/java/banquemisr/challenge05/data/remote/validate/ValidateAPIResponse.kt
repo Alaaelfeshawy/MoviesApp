@@ -1,5 +1,6 @@
 package banquemisr.challenge05.data.remote.validate
 
+import banquemisr.challenge05.data.Constants.GENERAL_CODE
 import banquemisr.challenge05.data.Constants.NO_CONNECTION_CODE
 import banquemisr.challenge05.data.Constants.TIME_OUT_CODE
 import banquemisr.challenge05.data.remote.response.ErrorResponse
@@ -38,10 +39,7 @@ class ValidateAPIResponse @Inject constructor(
                 }
             }
         } catch (throwable: HttpException) {
-            APIResponseState.NotValidResponse(errorCode = throwable.code(), message = throwable.message())
-        }
-        catch (e: Throwable) {
-            APIResponseState.NotValidResponse(errorCode = 999 , message = e.message ?: R.string.something_went_wrong)
+            APIResponseState.NotValidResponse(errorCode = throwable.code(), message = throwable.message ?:  R.string.something_went_wrong)
         } catch (s: SocketTimeoutException) {
             APIResponseState.NotValidResponse(errorCode =TIME_OUT_CODE, message = s.message ?: R.string.something_went_wrong)
         }
@@ -50,7 +48,13 @@ class ValidateAPIResponse @Inject constructor(
         }
         catch (e: Exception) {
             APIResponseState.NotValidResponse(
-                9999,
+                GENERAL_CODE,
+                e.message ?: R.string.something_went_wrong
+            )
+        }
+        catch (e: Throwable) {
+            APIResponseState.NotValidResponse(
+                GENERAL_CODE,
                 e.message ?: R.string.something_went_wrong
             )
         }

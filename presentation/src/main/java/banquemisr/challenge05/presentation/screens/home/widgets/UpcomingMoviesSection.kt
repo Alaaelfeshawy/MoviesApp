@@ -16,6 +16,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -23,6 +26,9 @@ import androidx.navigation.NavController
 import banquemisr.challenge05.presentation.base.LoadingType
 import banquemisr.challenge05.presentation.base.Routes
 import banquemisr.challenge05.presentation.base.Routes.setPatArgumentsToRoutes
+import banquemisr.challenge05.presentation.screens.home.MoviesScreenSemantics.MoviesListSemantics.MOVIES_FULL_LOADING_FOR_UPCOMING_MOVIES_TAG
+import banquemisr.challenge05.presentation.screens.home.MoviesScreenSemantics.MoviesListSemantics.MOVIES_PAGING_LOADING_FOR_UPCOMING_MOVIES_TAG
+import banquemisr.challenge05.presentation.screens.home.MoviesScreenSemantics.MoviesListSemantics.UPCOMING_MOVIES_LIST_TAG
 import banquemisr.challenge05.presentation.screens.home.viewmodel.MoviesContract
 import banquemisr.challenge05.presentation.screens.home.viewmodel.MoviesViewModel
 import banquemisr.challenge05.presentation.utils.extensions.getStringFromMessage
@@ -63,7 +69,11 @@ fun UpcomingMoviesSection(viewModel: MoviesViewModel , navController : NavContro
             Box {}
         }
         LazyRow(
-            state = lazyListState
+            state = lazyListState,
+            modifier = Modifier.semantics {
+                testTag = UPCOMING_MOVIES_LIST_TAG
+                contentDescription = UPCOMING_MOVIES_LIST_TAG
+            }
         ) {
             items(movies?.size ?: 0) {
                 val item = movies?.get(it)
@@ -77,9 +87,17 @@ fun UpcomingMoviesSection(viewModel: MoviesViewModel , navController : NavContro
             }
             item(key = loadingType) {
                 when (loadingType) {
-                    LoadingType.FullLoading -> MovieItemShimmer()
+                    LoadingType.FullLoading -> MovieItemShimmer(
+                        modifier = Modifier.semantics {
+                            testTag = MOVIES_FULL_LOADING_FOR_UPCOMING_MOVIES_TAG
+                        }
+                    )
 
-                    LoadingType.PaginationLoading -> MovieItemShimmer(isTitleVisible = false)
+                    LoadingType.PaginationLoading -> MovieItemShimmer(
+                        isTitleVisible = false ,
+                        modifier = Modifier.semantics {
+                        testTag = MOVIES_PAGING_LOADING_FOR_UPCOMING_MOVIES_TAG
+                    })
 
                     else -> {}
                 }

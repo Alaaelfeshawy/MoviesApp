@@ -21,7 +21,6 @@ class MoviesContract {
         data class GetPlayingMovies(val loadingType: LoadingType) : Event()
         data class GetUpcomingMovies(val loadingType: LoadingType) : Event()
         data class GetPopularMovies(val loadingType: LoadingType) : Event()
-        data class NavigateToMovieDetails(val route: String) : Event()
     }
 
 }

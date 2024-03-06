@@ -33,7 +33,7 @@ fun MovieItemShimmer(
     modifier: Modifier = Modifier,
     isTitleVisible : Boolean = true
 ) {
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = modifier.fillMaxSize()) {
         if (isTitleVisible){
             Text(text = "" ,
                 fontWeight = FontWeight.Bold,
@@ -57,8 +57,8 @@ fun MovieItemShimmer(
                 shadowElevation = 5.dp,
             ) {
 
-                Box(modifier = modifier.fillMaxSize()) {
-                    NetworkImage(imageUrl = "",modifier.background(brush = shimmerBrush()))
+                Box(modifier = Modifier.fillMaxSize()) {
+                    NetworkImage(imageUrl = "",Modifier.background(brush = shimmerBrush()))
                 }
             }
             Surface(
@@ -70,8 +70,8 @@ fun MovieItemShimmer(
                 shadowElevation = 5.dp,
             ) {
 
-                Box(modifier = modifier.fillMaxSize()) {
-                    NetworkImage(imageUrl = "",modifier.background(brush = shimmerBrush()))
+                Box(modifier = Modifier.fillMaxSize()) {
+                    NetworkImage(imageUrl = "",Modifier.background(brush = shimmerBrush()))
                 }
             }
         }

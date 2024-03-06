@@ -12,7 +12,7 @@ android {
     defaultConfig {
         minSdk = 24
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "banquemisr.challenge05.CustomTestRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
 
@@ -68,11 +68,20 @@ dependencies {
     //coil
     implementation ("io.coil-kt:coil-compose:2.4.0")
 
-    implementation ("androidx.hilt:hilt-navigation-compose:1.1.0")
+    implementation ("androidx.hilt:hilt-navigation-compose:1.2.0")
 
-    implementation("com.valentinilk.shimmer:compose-shimmer:1.2.0")
 
+    implementation("androidx.test:rules:1.5.0")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+    testImplementation("io.mockk:mockk:1.13.10")
+    androidTestImplementation ("androidx.navigation:navigation-testing:2.7.7")
+    androidTestImplementation ("com.google.dagger:hilt-android-testing:2.45")
+    kaptTest ("com.google.dagger:hilt-android-compiler:2.45")
+    kaptAndroidTest ("com.google.dagger:hilt-android-compiler:2.45")
+    androidTestImplementation("androidx.test.espresso:espresso-intents:3.5.1")
+    androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
     implementation(project(":domain"))
+    androidTestImplementation(project(":app"))
 
 //    implementation ("androidx.compose.ui:ui:1.6.2")
 

@@ -22,4 +22,9 @@ object Constants {
 
     const val TIME_OUT_CODE = 100
     const val NO_CONNECTION_CODE = 101
+    const val GENERAL_CODE = 9999
+
+    object MimeTypes {
+        const val APPLICATION_JSON = "application/json"
+    }
 }

@@ -4,14 +4,14 @@ import banquemisr.challenge05.domain.dto.movies.Movie
 import com.google.gson.annotations.SerializedName
 
 data class MoviesResponse(
-    val dates: Dates,
-    val page: Int,
+    val dates: Dates?=null,
+    val page: Int?=null,
     @SerializedName("results")
-    val movies: List<Result>,
+    val movies: List<Result>?=null,
     @SerializedName("total_pages")
-    val totalPages: Int,
+    val totalPages: Int?=null,
     @SerializedName("total_results")
-    val totalResults: Int
+    val totalResults: Int?=null
 )
 
 fun List<Result?>?.mapToMovies() = this?.map {

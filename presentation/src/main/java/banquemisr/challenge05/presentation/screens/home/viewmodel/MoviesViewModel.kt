@@ -17,7 +17,9 @@ import banquemisr.challenge05.presentation.base.LoadingType.PaginationLoading
 import banquemisr.challenge05.presentation.base.UIEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import javax.inject.Inject
 
 @HiltViewModel
@@ -25,12 +27,9 @@ class MoviesViewModel @Inject constructor(
     private val iGetPlayingMoviesUseCase: IGetPlayingMoviesUseCase,
     private val iGetUpcomingMoviesUseCase: IGetUpcomingMoviesUseCase,
     private val iGetPopularMoviesUseCase: IGetPopularMoviesUseCase,
-    @IODispatcher private val coroutineDispatcher: CoroutineDispatcher
+    @IODispatcher private val coroutineDispatcher: CoroutineDispatcher,
 ) : BaseViewModel<MoviesContract.Event, MoviesContract.State>(coroutineDispatcher) {
 
-    init {
-        setEvent(MoviesContract.Event.GetHomeData(FullLoading))
-    }
     override fun createInitialState(): MoviesContract.State {
         return MoviesContract.State()
     }
@@ -38,32 +37,35 @@ class MoviesViewModel @Inject constructor(
         when (uiEvent) {
               is MoviesContract.Event.GetHomeData ->{
                   viewModelScope.launch {
-                      try {
-                          callPlayingMovies(uiEvent.loadingType)
-                      } catch (e: Exception) {
-                          onPlayingMoviesError(
+                      supervisorScope {
+                          val playingMoviesDeferred = async { callPlayingMovies(uiEvent.loadingType) }
+                          val upcomingMoviesDeferred = async { callUpcomingMovies(uiEvent.loadingType) }
+                          val popularMoviesDeferred = async { callPopularMovies(uiEvent.loadingType) }
+                          try {
+                              playingMoviesDeferred.await()
+                          } catch (e: Exception) {
+                              onPlayingMoviesError(
                               errorModel = ErrorModel.GeneralError(1, "something happened wrong , please try later",),
                               errorType = ErrorType.GeneralError,
                               loadingType = None
                           )
-                      }
-                     try {
-                          callUpcomingMovies(uiEvent.loadingType)
-                      } catch (e: Exception) {
-                          onUpcomingMoviesError(
+                          }
+                         try {
+                             upcomingMoviesDeferred.await()
+                          } catch (e: Exception) {
+                             onUpcomingMoviesError(
                               errorModel = ErrorModel.GeneralError(1, "something happened wrong , please try later",),
                               errorType = ErrorType.GeneralError,
-                              loadingType = None
-                          )
-                      }
-                      try {
-                          callPopularMovies(uiEvent.loadingType)
-                      } catch (e: Exception) {
-                          onUpcomingMoviesError(
-                              errorModel = ErrorModel.GeneralError(1, "something happened wrong",),
-                              errorType = null,
-                              loadingType = None
-                          )
+                              loadingType = None)
+                          }
+                          try {
+                              popularMoviesDeferred.await()
+                          } catch (e: Exception) {
+                             onPopularMoviesError(
+                              errorModel = ErrorModel.GeneralError(1, "something happened wrong , please try later",),
+                              errorType = ErrorType.GeneralError,
+                              loadingType = None)
+                          }
                       }
                   }
               }
@@ -76,6 +78,7 @@ class MoviesViewModel @Inject constructor(
             is MoviesContract.Event.GetPopularMovies -> {
                 getPopularMovies(uiEvent)
             }
+            else -> {}
 
 //            is MoviesContract.Event.NavigateToMovieDetails -> {
 //
