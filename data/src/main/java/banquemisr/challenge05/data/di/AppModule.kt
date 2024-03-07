@@ -20,17 +20,10 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import okhttp3.HttpUrl
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
-import okhttp3.ResponseBody.Companion.toResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.io.IOException
-import java.net.SocketTimeoutException
 import java.util.concurrent.TimeUnit.SECONDS
 import javax.inject.Singleton
 
@@ -123,28 +116,28 @@ object AppModule {
             .connectTimeout(20, SECONDS)
             .readTimeout(30, SECONDS)
             .writeTimeout(20, SECONDS)
-            .addInterceptor { interceptSocketException(it) }
+//            .addInterceptor { interceptSocketException(it) }
             .retryOnConnectionFailure(true)
     }
 
-    @Throws(IOException::class)
-    private fun interceptSocketException(chain: Interceptor.Chain): Response {
-        var request: Request = chain.request()
-        val url: HttpUrl = request.url
-            .newBuilder()
-            .build()
-        request = request
-            .newBuilder()
-            .url(url)
-            .build()
-        val response = chain.proceed(request)
-        try {
-            return response.newBuilder()
-                .body(response.body?.string()?.toResponseBody(response.body?.contentType()))
-                .build()
-        } catch (exception: SocketTimeoutException) {
-            Response.Builder().body("".toResponseBody()).build()
-        }
-        return response
-    }
+//    @Throws(IOException::class)
+//    private fun interceptSocketException(chain: Interceptor.Chain): Response {
+//        var request: Request = chain.request()
+//        val url: HttpUrl = request.url
+//            .newBuilder()
+//            .build()
+//        request = request
+//            .newBuilder()
+//            .url(url)
+//            .build()
+//        val response = chain.proceed(request)
+//        try {
+//            return response.newBuilder()
+//                .body(response.body?.string()?.toResponseBody(response.body?.contentType()))
+//                .build()
+//        } catch (exception: SocketTimeoutException) {
+//            Response.Builder().body("".toResponseBody()).build()
+//        }
+//        return response
+//    }
 }

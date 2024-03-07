@@ -1,4 +1,4 @@
-package banquemisr.challenge05.data.repository
+package banquemisr.challenge05.data.util
 
 import banquemisr.challenge05.domain.dto.DataState
 import banquemisr.challenge05.domain.dto.ErrorModel

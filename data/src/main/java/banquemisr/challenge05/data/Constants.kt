@@ -18,8 +18,12 @@ object Constants {
         const val NOW_PLAYING = "movie/now_playing"
         const val POPULAR = "movie/popular"
         const val UPCOMING = "movie/upcoming"
+        const val MOVIE_DETAILS = "movie/{movie_id}"
     }
 
+    object Paths {
+        const val MOVIE_ID = "movie_id"
+    }
     const val TIME_OUT_CODE = 100
     const val NO_CONNECTION_CODE = 101
     const val GENERAL_CODE = 9999

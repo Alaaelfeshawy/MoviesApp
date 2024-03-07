@@ -1,5 +1,7 @@
 package banquemisr.challenge05.domain.di
 
+import banquemisr.challenge05.domain.usecase.getmoviedetails.GetMovieDetailsUseCase
+import banquemisr.challenge05.domain.usecase.getmoviedetails.IGetMovieDetailsUseCase
 import banquemisr.challenge05.domain.usecase.getplayingmovies.GetPlayingMoviesUseCase
 import banquemisr.challenge05.domain.usecase.getplayingmovies.IGetPlayingMoviesUseCase
 import banquemisr.challenge05.domain.usecase.getpopularmovies.GetPopularMoviesUseCase
@@ -27,5 +29,9 @@ abstract class DomainModule {
     @Binds
     @ViewModelScoped
     abstract fun bindGetUpcomingMoviesUseCase(getUpcomingMoviesUseCase: GetUpcomingMoviesUseCase): IGetUpcomingMoviesUseCase
+
+    @Binds
+    @ViewModelScoped
+    abstract fun bindGetMovieDetailsUseCase(getMovieDetailsUseCase: GetMovieDetailsUseCase): IGetMovieDetailsUseCase
 
 }
