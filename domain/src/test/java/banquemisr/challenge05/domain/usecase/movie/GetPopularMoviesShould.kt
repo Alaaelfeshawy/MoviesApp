@@ -7,23 +7,22 @@ import banquemisr.challenge05.domain.dto.movies.MoviesDTO
 import banquemisr.challenge05.domain.repository.movies.IMoviesRepository
 import banquemisr.challenge05.domain.usecase.getpopularmovies.GetPopularMoviesUseCase
 import banquemisr.challenge05.domain.usecase.getpopularmovies.IGetPopularMoviesUseCase
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.mockk
 import junit.framework.TestCase
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.times
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
 
 class GetPopularMoviesShould {
 
     private lateinit var iGetPopularMoviesUseCase: IGetPopularMoviesUseCase
-    private val iMoviesRepository = mock<IMoviesRepository>()
+    private val iMoviesRepository = mockk<IMoviesRepository>()
 
     private suspend fun initTests(dataState: DataState<MoviesDTO>) {
-        whenever(iMoviesRepository.getPopularMovies(1)).thenReturn(flow {
+        coEvery {  iMoviesRepository.getPopularMovies(1)} returns(flow {
             emit(dataState)
         })
         iGetPopularMoviesUseCase = GetPopularMoviesUseCase(iMoviesRepository)
@@ -33,7 +32,7 @@ class GetPopularMoviesShould {
     fun `call getPopularMovies one time`() = runTest {
         initTests(DataState.Success(MoviesDTO()))
         iGetPopularMoviesUseCase.getPopularMovies(1)
-        verify(iMoviesRepository, times(1)).getPopularMovies(1)
+        coVerify{iMoviesRepository.getPopularMovies(1)}
     }
 
     @Test
