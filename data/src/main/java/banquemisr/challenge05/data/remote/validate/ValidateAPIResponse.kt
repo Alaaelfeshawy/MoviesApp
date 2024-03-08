@@ -39,7 +39,7 @@ class ValidateAPIResponse @Inject constructor(
                 }
             }
         } catch (throwable: HttpException) {
-            APIResponseState.NotValidResponse(errorCode = throwable.code(), message = throwable.message ?:  R.string.something_went_wrong)
+            APIResponseState.NotValidResponse(errorCode = throwable.code(), message = R.string.something_went_wrong)
         } catch (s: SocketTimeoutException) {
             APIResponseState.NotValidResponse(errorCode =TIME_OUT_CODE, message = s.message ?: R.string.something_went_wrong)
         }

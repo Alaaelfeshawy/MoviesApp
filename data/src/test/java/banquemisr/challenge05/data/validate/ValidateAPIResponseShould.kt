@@ -11,8 +11,6 @@ import io.mockk.every
 import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.test.runTest
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Before
 import org.junit.Test
 import retrofit2.HttpException
@@ -71,14 +69,12 @@ class ValidateAPIResponseShould {
 
     @Test
     fun `return NotValidResponse in case of api throw HttpException`() = runTest {
-        val mock = mockk<Response<Any>>()
-        val errorBody = "error".toResponseBody("plain/text".toMediaTypeOrNull())
-        every { mock.body()} throws  HttpException(Response.error<Any>(600, errorBody))
-
+        val mock = mockk<Response<String>>()
+        every { mock.body() } throws HttpException(mRetrofitResponseHelper.emptyErrorResponse())
         val response = iValidateAPIResponse.validateResponse(mock)
         assertEquals(
             APIResponseState.NotValidResponse(
-                600, errorBody.string()
+                600, R.string.something_went_wrong
             ), response
         )
     }

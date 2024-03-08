@@ -47,7 +47,7 @@ class MovieDetailsViewModelShould {
 
     }
     private suspend fun initTest(dataState: DataState<MovieDetailsDTO> , id : String = "1") {
-        every {savedStateHandle.get<String>(Routes.Paths.MOVIE_DETAILS_ID)} returns (id)
+        every {savedStateHandle.get<String>(Routes.Paths.MOVIE_DETAILS_ID)} returns id
 
         coEvery { iGetMovieDetailsUseCase.getMovieDetails("1")} returns flow {
             emit(dataState)
@@ -62,7 +62,6 @@ class MovieDetailsViewModelShould {
     @Test
     fun `call GetMovieDetails one time`() = scope.runTest {
         initTest(DataState.Success(MovieDetailsDTO()) )
-        movieDetailsViewModel.setEvent(MovieDetailsViewModelContract.Event.GetMovieDetails)
         advanceUntilIdle()
         coVerify(exactly = 1) { iGetMovieDetailsUseCase.getMovieDetails("1")}
     }
@@ -70,7 +69,6 @@ class MovieDetailsViewModelShould {
     @Test
     fun `set loading updating correctly in  movie details after API call state changes`() = scope.runTest {
         initTest(DataState.Success(MovieDetailsDTO()))
-        movieDetailsViewModel.setEvent(MovieDetailsViewModelContract.Event.GetMovieDetails)
         val values = mutableListOf<MovieDetailsViewModelContract.State>()
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
             movieDetailsViewModel.uiState.toList(values)
@@ -85,7 +83,6 @@ class MovieDetailsViewModelShould {
     @Test
     fun `set MovieDetailsDTO successfully in state of contract`() = scope.runTest {
         initTest(DataState.Success(MovieDetailsDTO()))
-        movieDetailsViewModel.setEvent(MovieDetailsViewModelContract.Event.GetMovieDetails)
         advanceUntilIdle()
         val result = movieDetailsViewModel.uiState.first()
         assertEquals(MovieDetailsDTO(), result.movieDetailsDTO)
@@ -99,7 +96,6 @@ class MovieDetailsViewModelShould {
                 ErrorModel.NoInternetConnection
             )
         )
-        movieDetailsViewModel.setEvent(MovieDetailsViewModelContract.Event.GetMovieDetails)
         advanceUntilIdle()
         val result = movieDetailsViewModel.uiState.first()
         assertEquals(ErrorType.NoInternetConnection, result.errorType)
@@ -112,7 +108,6 @@ class MovieDetailsViewModelShould {
                 ErrorType.GeneralError,
                 ErrorModel.GeneralError(1,"error")
             ))
-        movieDetailsViewModel.setEvent(MovieDetailsViewModelContract.Event.GetMovieDetails)
         advanceUntilIdle()
         val result = movieDetailsViewModel.uiState.first()
         assertEquals(ErrorModel.GeneralError(1,"error"), result.errorModel)
