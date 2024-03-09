@@ -29,16 +29,15 @@ import banquemisr.challenge05.presentation.base.Routes.setPatArgumentsToRoutes
 import banquemisr.challenge05.presentation.screens.home.MoviesScreenSemantics.MoviesListSemantics.MOVIES_FULL_LOADING_FOR_UPCOMING_MOVIES_TAG
 import banquemisr.challenge05.presentation.screens.home.MoviesScreenSemantics.MoviesListSemantics.MOVIES_PAGING_LOADING_FOR_UPCOMING_MOVIES_TAG
 import banquemisr.challenge05.presentation.screens.home.MoviesScreenSemantics.MoviesListSemantics.UPCOMING_MOVIES_LIST_TAG
+import banquemisr.challenge05.presentation.screens.home.viewmodel.HomeState
 import banquemisr.challenge05.presentation.screens.home.viewmodel.MoviesContract
-import banquemisr.challenge05.presentation.screens.home.viewmodel.MoviesViewModel
 import banquemisr.challenge05.presentation.utils.extensions.getStringFromMessage
 
 @Composable
-fun UpcomingMoviesSection(viewModel: MoviesViewModel , navController : NavController) {
-    val state = viewModel.uiState.collectAsState().value
-    val movies = state.upcomingMoviesState.movies
-    val loadingType = state.upcomingMoviesState.loadingType
-    val errorModel = state.upcomingMoviesState.errorModel?.errorMessage
+fun UpcomingMoviesSection(state: HomeState, navController: NavController, onPaginationRequest : ()->Unit) {
+    val movies = state.movies
+    val loadingType = state.loadingType
+    val errorModel = state.errorModel?.errorMessage
     val context = LocalContext.current
     val lazyListState: LazyListState = rememberLazyListState()
     val isScrollToEnd by remember(lazyListState) {
@@ -51,7 +50,7 @@ fun UpcomingMoviesSection(viewModel: MoviesViewModel , navController : NavContro
         }
     }
     if (isScrollToEnd) {
-        viewModel.setEvent(MoviesContract.Event.GetUpcomingMovies(LoadingType.PaginationLoading))
+        onPaginationRequest.invoke()
     }
 
     Column(modifier = Modifier.fillMaxWidth()) {

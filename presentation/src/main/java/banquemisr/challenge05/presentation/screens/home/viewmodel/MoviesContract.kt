@@ -29,7 +29,6 @@ data class HomeState(
     val loadingType: LoadingType = LoadingType.None,
     val moviesDTO: MoviesDTO? = null,
     val errorModel: ErrorModel? = null,
-    val errorType: ErrorType? = null,
     val movies: ArrayList<Movie>? = arrayListOf(),
     val canPaginate: Boolean = false,
 )
