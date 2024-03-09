@@ -36,7 +36,7 @@ fun HomeScreen(navController: NavHostController, viewModel: MoviesViewModel) {
     val popularMoviesState = viewModel.uiState.collectAsStateWithLifecycle().value.popularMoviesState
     val upcomingMoviesState = viewModel.uiState.collectAsStateWithLifecycle().value.upcomingMoviesState
 
-    LaunchedEffect(key1 = Unit ){
+    LaunchedEffect(key1 = Unit){
         viewModel.setEvent(MoviesContract.Event.GetHomeData(LoadingType.FullLoading))
 
     }
@@ -53,6 +53,14 @@ fun HomeScreen(navController: NavHostController, viewModel: MoviesViewModel) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ){
+            if (viewModel.isAllOfThemHaveAnError()){
+                ErrorComponent(
+                    errorModel = viewModel.currentState.errorModelForAllMovies,
+                    modifier = Modifier.fillMaxHeight().semantics {
+                        testTag = MOVIES_SCREEN_ERROR
+                    }
+                )
+            }
             if (noInternetConnection){
                 ErrorComponent(
                     modifier = Modifier.fillMaxHeight().semantics {
