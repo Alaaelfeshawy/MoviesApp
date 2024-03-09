@@ -1,6 +1,7 @@
 package banquemisr.challenge05.presentation.screens.home.viewmodel
 
 import androidx.lifecycle.viewModelScope
+import banquemisr.challenge05.domain.R
 import banquemisr.challenge05.domain.di.dispatchers.qualifiers.IODispatcher
 import banquemisr.challenge05.domain.dto.DataState
 import banquemisr.challenge05.domain.dto.ErrorModel
@@ -36,38 +37,7 @@ class MoviesViewModel @Inject constructor(
     override fun handleEvent(uiEvent: UIEvent) {
         when (uiEvent) {
               is MoviesContract.Event.GetHomeData ->{
-                  viewModelScope.launch {
-                      supervisorScope {
-                          val playingMoviesDeferred = async { callPlayingMovies(uiEvent.loadingType) }
-                          val upcomingMoviesDeferred = async { callUpcomingMovies(uiEvent.loadingType) }
-                          val popularMoviesDeferred = async { callPopularMovies(uiEvent.loadingType) }
-                          try {
-                              playingMoviesDeferred.await()
-                          } catch (e: Exception) {
-                              onPlayingMoviesError(
-                              errorModel = ErrorModel.GeneralError(1, "something happened wrong , please try later",),
-                              errorType = ErrorType.GeneralError,
-                              loadingType = None
-                          )
-                          }
-                         try {
-                             upcomingMoviesDeferred.await()
-                          } catch (e: Exception) {
-                             onUpcomingMoviesError(
-                              errorModel = ErrorModel.GeneralError(1, "something happened wrong , please try later",),
-                              errorType = ErrorType.GeneralError,
-                              loadingType = None)
-                          }
-                          try {
-                              popularMoviesDeferred.await()
-                          } catch (e: Exception) {
-                             onPopularMoviesError(
-                              errorModel = ErrorModel.GeneralError(1, "something happened wrong , please try later",),
-                              errorType = ErrorType.GeneralError,
-                              loadingType = None)
-                          }
-                      }
-                  }
+                  getAllMoviesCategories(uiEvent)
               }
             is MoviesContract.Event.GetPlayingMovies -> {
                 getPlayingMovies(uiEvent)
@@ -79,10 +49,52 @@ class MoviesViewModel @Inject constructor(
                 getPopularMovies(uiEvent)
             }
             else -> {}
+        }
+    }
 
-//            is MoviesContract.Event.NavigateToMovieDetails -> {
-//
-//            }
+    private fun getAllMoviesCategories(uiEvent: MoviesContract.Event.GetHomeData) {
+        viewModelScope.launch {
+            supervisorScope {
+                val playingMoviesDeferred = async { callPlayingMovies(uiEvent.loadingType) }
+                val upcomingMoviesDeferred = async { callUpcomingMovies(uiEvent.loadingType) }
+                val popularMoviesDeferred = async { callPopularMovies(uiEvent.loadingType) }
+                try {
+                    playingMoviesDeferred.await()
+                } catch (e: Exception) {
+                    onPlayingMoviesError(
+                        errorModel = ErrorModel.GeneralError(
+                            1,
+                            R.string.something_went_wrong,
+                        ),
+                        errorType = ErrorType.GeneralError,
+                        loadingType = None
+                    )
+                }
+                try {
+                    upcomingMoviesDeferred.await()
+                } catch (e: Exception) {
+                    onUpcomingMoviesError(
+                        errorModel = ErrorModel.GeneralError(
+                            1,
+                            R.string.something_went_wrong,
+                        ),
+                        errorType = ErrorType.GeneralError,
+                        loadingType = None
+                    )
+                }
+                try {
+                    popularMoviesDeferred.await()
+                } catch (e: Exception) {
+                    onPopularMoviesError(
+                        errorModel = ErrorModel.GeneralError(
+                            1,
+                            R.string.something_went_wrong,
+                        ),
+                        errorType = ErrorType.GeneralError,
+                        loadingType = None
+                    )
+                }
+            }
         }
     }
     private fun getUpcomingMovies(uiEvent: MoviesContract.Event.GetUpcomingMovies) {
@@ -170,7 +182,6 @@ class MoviesViewModel @Inject constructor(
             copy(
                 playingMoviesState = HomeState(
                     errorModel = if (loadingType != PaginationLoading) errorModel else null,
-                    errorType = errorType,
                     loadingType = None,
                 ),
                 errorType = errorType,
@@ -235,7 +246,6 @@ class MoviesViewModel @Inject constructor(
             copy(
                 upcomingMoviesState = HomeState(
                     errorModel = if (loadingType != PaginationLoading) errorModel else null,
-                    errorType = errorType,
                     loadingType = None,
                 ),
                 errorType = errorType,
@@ -300,7 +310,6 @@ class MoviesViewModel @Inject constructor(
             copy(
                 popularMoviesState = HomeState(
                     errorModel = if (loadingType != PaginationLoading) errorModel else null,
-                    errorType = errorType,
                     loadingType = None,
                 ),
                 errorType = errorType,
@@ -327,5 +336,23 @@ class MoviesViewModel @Inject constructor(
             )
         }
     }
+
+    fun isAllOfThemHaveAnError() : Boolean{
+         if(currentState.popularMoviesState.errorModel != null && currentState.upcomingMoviesState.errorModel != null &&
+                currentState.playingMoviesState.errorModel !=null){
+             setState {
+                 copy(
+                     errorModelForAllMovies = ErrorModel.GeneralError(
+                         666,
+                             currentState.upcomingMoviesState.errorModel?.errorMessage,
+                         icon = banquemisr.challenge05.presentation.R.drawable.orange_error_icon
+                     )
+                 )
+             }
+             return true
+         }
+        return false
+    }
+
 
 }

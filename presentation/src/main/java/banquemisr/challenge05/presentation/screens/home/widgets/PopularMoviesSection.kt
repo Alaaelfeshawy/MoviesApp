@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -26,16 +27,14 @@ import banquemisr.challenge05.presentation.base.LoadingType
 import banquemisr.challenge05.presentation.base.Routes
 import banquemisr.challenge05.presentation.base.Routes.setPatArgumentsToRoutes
 import banquemisr.challenge05.presentation.screens.home.MoviesScreenSemantics
-import banquemisr.challenge05.presentation.screens.home.viewmodel.MoviesContract
-import banquemisr.challenge05.presentation.screens.home.viewmodel.MoviesViewModel
+import banquemisr.challenge05.presentation.screens.home.viewmodel.HomeState
 import banquemisr.challenge05.presentation.utils.extensions.getStringFromMessage
 
 @Composable
-fun PopularMoviesSection(viewModel: MoviesViewModel, navController: NavHostController) {
-    val state = viewModel.uiState.collectAsState().value
-    val movies = state.popularMoviesState.movies
-    val loadingType = state.popularMoviesState.loadingType
-    val errorModel = state.popularMoviesState.errorModel?.errorMessage
+fun PopularMoviesSection(state: HomeState, navController: NavHostController, onPaginationRequest : ()->Unit) {
+    val movies = state.movies
+    val loadingType = state.loadingType
+    val errorModel = state.errorModel?.errorMessage
     val context = LocalContext.current
     val lazyListState: LazyListState = rememberLazyListState()
     val isScrollToEnd by remember {
@@ -46,13 +45,17 @@ fun PopularMoviesSection(viewModel: MoviesViewModel, navController: NavHostContr
             firstVisibleItemIndex + visibleItemsCount >= totalItemsCount && !movies.isNullOrEmpty() && loadingType ==LoadingType.None        }
     }
     if (isScrollToEnd) {
-        viewModel.setEvent(MoviesContract.Event.GetPopularMovies(LoadingType.PaginationLoading))
+        onPaginationRequest.invoke()
+    }
+
+    LaunchedEffect(key1 = errorModel){
+        if (errorModel != null){
+            Toast.makeText(context,errorModel.getStringFromMessage(context),Toast.LENGTH_SHORT).show()
+        }
     }
 
     Column(modifier = Modifier.fillMaxWidth()) {
-        if (errorModel != null){
-            Toast.makeText(context, errorModel.getStringFromMessage(context), Toast.LENGTH_SHORT).show()
-        }
+
         if (!movies.isNullOrEmpty()){
             Text(text = "Popular movies" ,
                 fontWeight = FontWeight.Bold,

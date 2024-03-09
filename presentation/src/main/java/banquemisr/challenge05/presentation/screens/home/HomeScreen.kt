@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import banquemisr.challenge05.domain.dto.ErrorType
 import banquemisr.challenge05.presentation.base.LoadingType
@@ -31,8 +32,11 @@ import banquemisr.challenge05.presentation.screens.home.widgets.UpcomingMoviesSe
 fun HomeScreen(navController: NavHostController, viewModel: MoviesViewModel) {
 
     val noInternetConnection = viewModel.uiState.collectAsState().value.errorType == ErrorType.NoInternetConnection
+    val playingMoviesState = viewModel.uiState.collectAsStateWithLifecycle().value.playingMoviesState
+    val popularMoviesState = viewModel.uiState.collectAsStateWithLifecycle().value.popularMoviesState
+    val upcomingMoviesState = viewModel.uiState.collectAsStateWithLifecycle().value.upcomingMoviesState
 
-    LaunchedEffect(key1 = Unit ){
+    LaunchedEffect(key1 = Unit){
         viewModel.setEvent(MoviesContract.Event.GetHomeData(LoadingType.FullLoading))
 
     }
@@ -49,6 +53,14 @@ fun HomeScreen(navController: NavHostController, viewModel: MoviesViewModel) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ){
+            if (viewModel.isAllOfThemHaveAnError()){
+                ErrorComponent(
+                    errorModel = viewModel.currentState.errorModelForAllMovies,
+                    modifier = Modifier.fillMaxHeight().semantics {
+                        testTag = MOVIES_SCREEN_ERROR
+                    }
+                )
+            }
             if (noInternetConnection){
                 ErrorComponent(
                     modifier = Modifier.fillMaxHeight().semantics {
@@ -56,9 +68,15 @@ fun HomeScreen(navController: NavHostController, viewModel: MoviesViewModel) {
                     }
                 )
             }else{
-                UpcomingMoviesSection(viewModel , navController)
-                PopularMoviesSection(viewModel , navController)
-                PlayingNowMoviesSection(viewModel , navController)
+                UpcomingMoviesSection(upcomingMoviesState , navController){
+                    viewModel.setEvent(MoviesContract.Event.GetUpcomingMovies(LoadingType.PaginationLoading))
+                }
+                PopularMoviesSection(popularMoviesState , navController){
+                    viewModel.setEvent(MoviesContract.Event.GetPopularMovies(LoadingType.PaginationLoading))
+                }
+                PlayingNowMoviesSection(playingMoviesState , navController){
+                    viewModel.setEvent(MoviesContract.Event.GetPlayingMovies(LoadingType.PaginationLoading))
+                }
             }
         }
     }
