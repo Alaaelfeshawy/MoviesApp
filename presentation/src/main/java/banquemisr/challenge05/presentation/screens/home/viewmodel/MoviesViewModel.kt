@@ -339,7 +339,7 @@ class MoviesViewModel @Inject constructor(
 
     fun isAllOfThemHaveAnError() : Boolean{
          if(currentState.popularMoviesState.errorModel != null && currentState.upcomingMoviesState.errorModel != null &&
-                currentState.playingMoviesState.errorModel !=null){
+                currentState.playingMoviesState.errorModel !=null && currentState.errorType != ErrorType.NoInternetConnection){
              setState {
                  copy(
                      errorModelForAllMovies = ErrorModel.GeneralError(
