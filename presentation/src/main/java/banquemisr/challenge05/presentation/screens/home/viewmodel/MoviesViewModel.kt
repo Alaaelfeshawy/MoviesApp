@@ -64,7 +64,7 @@ class MoviesViewModel @Inject constructor(
                     onPlayingMoviesError(
                         errorModel = ErrorModel.GeneralError(
                             1,
-                            R.string.something_went_wrong,
+                            "something happened wrong , please try later",
                         ),
                         errorType = ErrorType.GeneralError,
                         loadingType = None
@@ -76,7 +76,7 @@ class MoviesViewModel @Inject constructor(
                     onUpcomingMoviesError(
                         errorModel = ErrorModel.GeneralError(
                             1,
-                            R.string.something_went_wrong,
+                            "something happened wrong , please try later",
                         ),
                         errorType = ErrorType.GeneralError,
                         loadingType = None
@@ -88,7 +88,7 @@ class MoviesViewModel @Inject constructor(
                     onPopularMoviesError(
                         errorModel = ErrorModel.GeneralError(
                             1,
-                            R.string.something_went_wrong,
+                            "something happened wrong , please try later",
                         ),
                         errorType = ErrorType.GeneralError,
                         loadingType = None
