@@ -64,7 +64,7 @@ class MoviesViewModel @Inject constructor(
                     onPlayingMoviesError(
                         errorModel = ErrorModel.GeneralError(
                             1,
-                            "something happened wrong , please try later",
+                            R.string.something_went_wrong,
                         ),
                         errorType = ErrorType.GeneralError,
                         loadingType = None
@@ -76,7 +76,7 @@ class MoviesViewModel @Inject constructor(
                     onUpcomingMoviesError(
                         errorModel = ErrorModel.GeneralError(
                             1,
-                            "something happened wrong , please try later",
+                            R.string.something_went_wrong,
                         ),
                         errorType = ErrorType.GeneralError,
                         loadingType = None
@@ -88,7 +88,7 @@ class MoviesViewModel @Inject constructor(
                     onPopularMoviesError(
                         errorModel = ErrorModel.GeneralError(
                             1,
-                            "something happened wrong , please try later",
+                            R.string.something_went_wrong,
                         ),
                         errorType = ErrorType.GeneralError,
                         loadingType = None
@@ -97,7 +97,6 @@ class MoviesViewModel @Inject constructor(
             }
         }
     }
-
     private fun getUpcomingMovies(uiEvent: MoviesContract.Event.GetUpcomingMovies) {
         val canPaginate = currentState.upcomingMoviesState.canPaginate
         val moviesNotNullOrEmpty = !currentState.upcomingMoviesState.movies.isNullOrEmpty()
