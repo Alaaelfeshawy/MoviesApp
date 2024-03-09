@@ -337,4 +337,22 @@ class MoviesViewModel @Inject constructor(
         }
     }
 
+    fun isAllOfThemHaveAnError() : Boolean{
+         if(currentState.popularMoviesState.errorModel != null && currentState.upcomingMoviesState.errorModel != null &&
+                currentState.playingMoviesState.errorModel !=null && currentState.errorType != ErrorType.NoInternetConnection){
+             setState {
+                 copy(
+                     errorModelForAllMovies = ErrorModel.GeneralError(
+                         666,
+                             currentState.upcomingMoviesState.errorModel?.errorMessage,
+                         icon = banquemisr.challenge05.presentation.R.drawable.orange_error_icon
+                     )
+                 )
+             }
+             return true
+         }
+        return false
+    }
+
+
 }

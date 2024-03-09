@@ -14,6 +14,7 @@ class MoviesContract {
         val upcomingMoviesState : HomeState = HomeState(),
         val popularMoviesState : HomeState = HomeState(),
         val errorType: ErrorType? = null,
+        val errorModelForAllMovies: ErrorModel? = null,
        ) : UIState
 
     sealed class Event : UIEvent {

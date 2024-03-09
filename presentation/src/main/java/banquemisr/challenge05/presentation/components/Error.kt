@@ -22,7 +22,7 @@ import banquemisr.challenge05.presentation.utils.extensions.getStringFromMessage
 @Composable
 fun ErrorComponent(
     modifier: Modifier = Modifier,
-    errorModel: ErrorModel = ErrorModel.NoInternetConnection
+    errorModel: ErrorModel? = ErrorModel.NoInternetConnection
 ) {
     val context = LocalContext.current
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
@@ -30,7 +30,7 @@ fun ErrorComponent(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if (errorModel.errorIcon != null){
+            if (errorModel?.errorIcon != null){
                 Image(
                     painter = painterResource(id = errorModel.errorIcon!!),
                     contentDescription = "",
@@ -39,7 +39,7 @@ fun ErrorComponent(
             }
             Text(
                 modifier = Modifier.padding(16.dp, 8.dp),
-                text = errorModel.errorMessage.getStringFromMessage(context),
+                text = errorModel?.errorMessage.getStringFromMessage(context),
                 style = TextStyle(
                     textAlign = TextAlign.Center ,
                     fontSize = 18.sp
