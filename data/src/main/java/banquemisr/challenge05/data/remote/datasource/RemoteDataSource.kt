@@ -3,6 +3,7 @@ package banquemisr.challenge05.data.remote.datasource
 import banquemisr.challenge05.data.remote.api.API
 import banquemisr.challenge05.data.remote.response.movies.MoviesResponse
 import banquemisr.challenge05.data.remote.internet.ICheckInternetConnection
+import banquemisr.challenge05.data.remote.response.moviedetails.MovieDetailsResponse
 import banquemisr.challenge05.data.remote.validate.APIResponseState
 import banquemisr.challenge05.data.remote.validate.IValidateAPIResponse
 import javax.inject.Inject
@@ -34,7 +35,13 @@ class RemoteDataSource @Inject constructor(
         } else APIResponseState.NoInternetConnection
     }
 
-
+    override suspend fun getMoviesDetails(movieId: String): APIResponseState<MovieDetailsResponse> {
+        return if (iCheckInternetConnection.isNetworkAvailable()) {
+            val response = api.getMovieDetails(movieId)
+            iValidateAPIResponse.validateResponse(response)
+        } else
+            APIResponseState.NoInternetConnection
+    }
 
 
 }

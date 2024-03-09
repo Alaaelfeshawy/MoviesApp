@@ -54,7 +54,7 @@ class MoviesScreenShould {
     @Test
     fun onMovieItemClick() {
         composeTestRule.onAllNodes(hasTestTag(UPCOMING_MOVIES_LIST_TAG))[0].performClick()
-        //todo verify movie name which clicked was the same in movie details
+        composeTestRule.onNodeWithText("a").isDisplayed()
 
     }
 

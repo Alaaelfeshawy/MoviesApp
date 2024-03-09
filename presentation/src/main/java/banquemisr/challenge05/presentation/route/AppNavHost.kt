@@ -10,6 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import banquemisr.challenge05.presentation.base.Routes
 import banquemisr.challenge05.presentation.screens.details.DetailsScreen
+import banquemisr.challenge05.presentation.screens.details.viewmodel.MovieDetailsViewModel
 import banquemisr.challenge05.presentation.screens.home.HomeScreen
 import banquemisr.challenge05.presentation.screens.home.viewmodel.MoviesViewModel
 
@@ -32,7 +33,10 @@ fun AppNavHost(
             Routes.Movies.MOVIES_DETAILS,
             arguments = listOf(navArgument(Routes.Paths.MOVIE_DETAILS_ID) { type = NavType.StringType }),
         ) {backStackEntry->
-            DetailsScreen( navController, backStackEntry.arguments?.getString(Routes.Paths.MOVIE_DETAILS_ID),)
+            val viewModel: MovieDetailsViewModel = hiltViewModel()
+
+            DetailsScreen( navController, viewModel
+            )
         }
 
     }

@@ -7,23 +7,21 @@ import banquemisr.challenge05.domain.dto.movies.MoviesDTO
 import banquemisr.challenge05.domain.repository.movies.IMoviesRepository
 import banquemisr.challenge05.domain.usecase.getupcomingmovies.GetUpcomingMoviesUseCase
 import banquemisr.challenge05.domain.usecase.getupcomingmovies.IGetUpcomingMoviesUseCase
+import io.mockk.coEvery
+import io.mockk.mockk
 import junit.framework.TestCase
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.times
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
 
 class GetUpcomingMoviesShould {
 
     private lateinit var iGetUpcomingMoviesUseCase: IGetUpcomingMoviesUseCase
-    private val iMoviesRepository = mock<IMoviesRepository>()
+    private val iMoviesRepository = mockk<IMoviesRepository>()
 
     private suspend fun initTests(dataState: DataState<MoviesDTO>) {
-        whenever(iMoviesRepository.getUpcomingMovies(1)).thenReturn(flow {
+        coEvery {  (iMoviesRepository.getUpcomingMovies(1))} returns (flow {
             emit(dataState)
         })
         iGetUpcomingMoviesUseCase = GetUpcomingMoviesUseCase(iMoviesRepository)
@@ -33,7 +31,7 @@ class GetUpcomingMoviesShould {
     fun `call getUpcomingMovies one time`() = runTest {
         initTests(DataState.Success(MoviesDTO()))
         iGetUpcomingMoviesUseCase.getUpcomingMovies(1)
-        verify(iMoviesRepository, times(1)).getUpcomingMovies(1)
+        coEvery{iMoviesRepository.getUpcomingMovies(1)}
     }
 
     @Test

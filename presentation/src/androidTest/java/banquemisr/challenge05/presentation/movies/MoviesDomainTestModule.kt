@@ -4,8 +4,10 @@ import banquemisr.challenge05.domain.di.DomainModule
 import banquemisr.challenge05.domain.dto.DataState
 import banquemisr.challenge05.domain.dto.ErrorModel
 import banquemisr.challenge05.domain.dto.ErrorType
+import banquemisr.challenge05.domain.dto.moviedetails.MovieDetailsDTO
 import banquemisr.challenge05.domain.dto.movies.Movie
 import banquemisr.challenge05.domain.dto.movies.MoviesDTO
+import banquemisr.challenge05.domain.usecase.getmoviedetails.IGetMovieDetailsUseCase
 import banquemisr.challenge05.domain.usecase.getplayingmovies.IGetPlayingMoviesUseCase
 import banquemisr.challenge05.domain.usecase.getpopularmovies.IGetPopularMoviesUseCase
 import banquemisr.challenge05.domain.usecase.getupcomingmovies.IGetUpcomingMoviesUseCase
@@ -48,6 +50,15 @@ object MoviesDomainTestModule {
     fun provideIGetPopularMoviesUseCase() = object  : IGetPopularMoviesUseCase {
         override suspend fun getPopularMovies(page: Int): Flow<DataState<MoviesDTO>> {
             return flowOf(DataState.Success(MoviesDTO(movies = arrayListOf(Movie(title = "a")))))
+        }
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideGetMoviesDetailsUseCase() = object  : IGetMovieDetailsUseCase {
+        override suspend fun getMovieDetails(id: String): Flow<DataState<MovieDetailsDTO>> {
+            return flowOf(DataState.Success(MovieDetailsDTO(title = "a")))
+
         }
     }
 }
